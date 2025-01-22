@@ -1,0 +1,39 @@
+#+title: :tools jira
+
+A Jira API client for Doom Emacs
+
+
+* Files
+
+├── packages.el
+├── config.el
+├── autoload.el
+└── lisp/
+    ├── core.el        (core functionality, configs, and utilities)
+    ├── api.el         (API request handling functions)
+    ├── auth.el        (authentication related functions)
+    ├── formatters.el  (data formatting functions)
+    └── ui.el          (display and interface functions)
+
+* Install
+
+`mkdir -p ~/.config/doom/modules/tools/jira`
+`git clone git@github.com:nav/jira-emacs.git ~/.config/doom/modules/tools/jira`
+
+Create ~/.authinfo with the following information
+`machine <YOUR-DOMAIN>.atlassian.net login <EMAIL> password <API-TOKEN> port 443`
+
+In `.config/doom/init.el`, add "jira" to `:tools`
+
+In `.config/doom/config.el`, add `(setq +jira-host "https://<your-subdomain>.atlassian.net")`
+
+Run `./config/emacs/bin/doom sync`
+
+* Usage
+
+`C-c j` - Jira
+
+- `C-c j d` - Turn on Debugging
+- `C-c j s` - Assigned issues in current sprint
+- `C-c j i` - Find an issue by id
+- `C-c j f` - Search for issues
