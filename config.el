@@ -10,6 +10,7 @@
 (map! :leader
       (:prefix-map ("j" . "jira")
        :desc "Get issue" "i" #'+jira/issue
+       :desc "Open current issue" "o" #'+jira/open-issue-from-branch
        :desc "Sprint Issues" "s" #'+jira/sprint-issues
        :desc "Search Issues" "f" #'+jira/search-issues
        :desc "Toggle debug" "d" #'+jira/toggle-debug))

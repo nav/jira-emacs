@@ -21,6 +21,16 @@ ISSUE-KEY is the Jira issue key (e.g., PROJ-123)"
     (user-error "Invalid issue key format. Should be like PROJ-123")))
 
 ;;;###autoload
+(defun +jira/open-issue-from-branch ()
+  "Extract Jira issue number from current git branch and open it."
+  (interactive)
+  (when-let* ((branch (magit-get-current-branch))
+              (issue-key (and branch
+                              (string-match "\\(IX-[0-9]+\\)" branch)
+                              (match-string 1 branch))))
+    (+jira/issue issue-key)))
+
+;;;###autoload
 (defun +jira/sprint-issues ()
   "Get issues assigned to me in the current sprint."
   (interactive)
