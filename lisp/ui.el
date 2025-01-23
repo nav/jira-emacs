@@ -31,8 +31,10 @@
                       (org-mode)
                       (view-mode -1)  ; Disable view-mode temporarily
 
-                      ;; Create a new keymap and set it as the local map
-                      (let ((map (make-sparse-keymap)))
+                      ;; Create a new keymap that inherits from org-mode-map
+                      (let ((map (make-composed-keymap
+                                  (make-sparse-keymap)
+                                  org-mode-map)))
                         (define-key map (kbd "q") #'+jira--quit-and-kill-buffer)
                         (use-local-map map))
 
