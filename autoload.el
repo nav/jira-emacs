@@ -51,3 +51,41 @@ ISSUE-KEY is the Jira issue key (e.g., PROJ-123)"
          (jql (format "text ~ \"%s\" ORDER BY updated DESC"
                       (replace-regexp-in-string "\"" "\\\"" query))))
     (+jira--search-request jql)))
+
+;; Branching
+(defun +jira--find-existing-branch (issue-key)
+  "Find existing branch containing ISSUE-KEY."
+  (let ((branches (split-string (shell-command-to-string "git branch -a") "\n" t)))
+    (seq-find (lambda (branch)
+                (string-match-p issue-key (string-trim branch)))
+              branches)))
+
+(defun +jira--create-branch-name (issue-key issue-type summary)
+  "Create a branch name from ISSUE-KEY, ISSUE-TYPE, and SUMMARY."
+  (let* ((prefix (if (string= issue-type "Bug") "fix" "feat"))
+         (cleaned-summary (replace-regexp-in-string "[^a-zA-Z0-9]+" "-"
+                                                    (downcase (string-trim summary))))
+         (branch-name (format "%s/%s-%s" prefix issue-key cleaned-summary)))
+    ;; Truncate to 50 characters if needed
+    (if (> (length branch-name) 50)
+        (substring branch-name 0 50)
+      branch-name)))
+
+(defun +jira/create-branch-from-issue ()
+  "Create a git branch from the current issue or switch to it if it exists."
+  (interactive)
+  (when-let* ((issue-key (tabulated-list-get-id))
+              (issue-data (car (seq-filter
+                                (lambda (entry)
+                                  (string= (car entry) issue-key))
+                                tabulated-list-entries)))
+              (entry-vector (cadr issue-data))
+              (issue-type (aref entry-vector 1))
+              (summary (aref entry-vector 5)))
+    (if-let ((existing-branch (+jira--find-existing-branch issue-key)))
+        (let ((branch-name (string-trim existing-branch "^[* ]*" "[ \r\n]*$")))
+          (message "Switching to existing branch: %s" branch-name)
+          (shell-command (format "git checkout %s" branch-name)))
+      (let ((new-branch (+jira--create-branch-name issue-key issue-type summary)))
+        (message "Creating new branch: %s" new-branch)
+        (create-branch-from-remote "origin/dev" new-branch)))))

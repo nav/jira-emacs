@@ -316,6 +316,7 @@ INDENT-LEVEL is used for nested lists indentation."
   (- (length jira-priority-order)
      (or (cl-position priority jira-priority-order :test 'string-equal) 0)))
 
+
 (define-derived-mode jira-sprint-issues-mode tabulated-list-mode "Jira Sprint Issues"
   "Major mode for displaying sprint issues."
   (setq tabulated-list-format
@@ -332,7 +333,10 @@ INDENT-LEVEL is used for nested lists indentation."
          ("Summary" 50 t)])
   (setq tabulated-list-padding 2)
   (setq tabulated-list-sort-key (cons "Priority" nil))
-  (tabulated-list-init-header))
+  (tabulated-list-init-header)
+
+  ;; Add keybinding for branch creation
+  (define-key jira-sprint-issues-mode-map (kbd "b") #'+jira/create-branch-from-issue))
 
 (defun +jira--format-issue-list (data)
   "Format a list of issues from search results DATA."
