@@ -88,4 +88,4 @@ ISSUE-KEY is the Jira issue key (e.g., PROJ-123)"
           (shell-command (format "git checkout %s" branch-name)))
       (let ((new-branch (+jira--create-branch-name issue-key issue-type summary)))
         (message "Creating new branch: %s" new-branch)
-        (create-branch-from-remote "origin/dev" new-branch)))))
+        (create-branch-from-remote "dev" new-branch)))))
